@@ -38,21 +38,26 @@
         state: present
         update_cache: yes
       become: yes
+
     - service:
         name: docker
         state: started
         enabled: yes
       become: yes
+
     - name: Get project files from Git
       git:
         repo: 'https://github.com/SaraFilipkova/4IT572_docker.git'
         dest: ./app
+
     - name: Build Dockerized e-shop
       shell: cd ./app && docker build -t eshop:latest .
       become: yes
+
     - name: Run Dockerized e-shop
       shell: docker run -p 80:3000 eshop:latest
       async: 90
       poll: 0
       become: yes
+
     - wait_for: port=80
