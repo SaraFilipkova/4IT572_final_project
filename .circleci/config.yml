@@ -8,14 +8,20 @@ jobs:
       - run: npm install
       - run: npm run test
       - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+           - .ansible
 
   deploy:
     docker:
       - image: circleci/python:3.7.7
     steps:
-        - run: pip3 install ansible boto boto3
-        - run: echo ${SSH_KEY_FILE_CONTENT} > presentation.pem
-        - run: ansible-playbook ec2-deploy.yml --user=ubuntu --key-file=presentation.pem
+      - attach_workspace:
+          at: .
+      - run: pip3 install ansible boto boto3
+      - run: echo ${SSH_KEY_FILE_CONTENT} > presentation.pem
+      - run: ansible-playbook .ansible/ec2-deploy.yml --user=ubuntu --key-file=presentation.pem
 
 workflows:
   version: 2.1
