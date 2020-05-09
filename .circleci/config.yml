@@ -21,6 +21,7 @@ jobs:
           at: .
       - run: pip3 install ansible boto boto3
       - run: echo ${SSH_KEY_FILE_CONTENT} | sed 's/<newline_placeholder>/\n/g' > presentation.pem
+      - run: chmod 400 presentation.pem
       - run: >
           ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook
